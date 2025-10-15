@@ -430,7 +430,7 @@ class WebAutomationAgent:
 
                 self.context = await self.playwright.chromium.launch_persistent_context(
 
-                    user_data_dir="%TEMP%\\chrome_debug",
+                    user_data_dir="../../Shared-Browser-Data/Make-Up-Exam-Macro-browser_data",
 
                     headless=False,
 

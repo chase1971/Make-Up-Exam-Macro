@@ -186,10 +186,10 @@ class ClickCaptureGUI:
 
     async def open_browser(self):
         try:
-            os.makedirs("browser_data", exist_ok=True)
+            os.makedirs("../../Shared-Browser-Data/Make-Up-Exam-Macro-browser_data", exist_ok=True)
             self.playwright = await async_playwright().start()
             self.context = await self.playwright.chromium.launch_persistent_context(
-                "browser_data", headless=False,
+                "../../Shared-Browser-Data/Make-Up-Exam-Macro-browser_data", headless=False,
                 args=['--disable-blink-features=AutomationControlled']
             )
             self.page = self.context.pages[0] if self.context.pages else await self.context.new_page()
