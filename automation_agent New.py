@@ -204,7 +204,7 @@ class WebAutomationAgent:
                 self.log(f"❌ Could not connect to existing browser: {e}")
                 browser = await self.playwright.chromium.launch(
                     headless=False,
-                    args=['--remote-debugging-port=9222', '--user-data-dir=../../Shared-Browser-Data/Make-Up-Exam-Macro-browser_data']
+                    args=['--remote-debugging-port=9222', '--user-data-dir=../../Shared-Browser-Data/Make-Up-Exam-Macro-browser_data', '--window-position=100,100', '--window-size=1920,1080']
                 )
                 self.context = await browser.new_context()
                 self.page = await self.context.new_page()

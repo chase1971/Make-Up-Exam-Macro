@@ -434,7 +434,7 @@ class WebAutomationAgent:
 
                     headless=False,
 
-                    args=['--remote-debugging-port=9222', '--window-position=-1920,0', '--window-size=1920,1080']
+                    args=['--remote-debugging-port=9222', '--window-position=100,100', '--window-size=1920,1080']
 
                 )
 
