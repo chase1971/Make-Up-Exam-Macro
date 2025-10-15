@@ -7,10 +7,11 @@ from playwright.async_api import async_playwright
 from datetime import datetime
 import threading
 import os
+import screeninfo  # ✅ Added
 
 LOGIN_URL = "https://my.lonestar.edu/psp/ihprd/?cmd=login"
 FORM_URL = "https://my.lonestar.edu/psp/ihprd/EMPLOYEE/EMPL/c/LSC_TCR.LSC_TCRFORMS.GBL"
-CSV_PATH = r"C:\\Users\\chase\\My Drive\\scripts\\School Scripts\\AI Agent Exam Form\\Students.csv"
+CSV_PATH = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\Students.csv"
 
 class Agent:
     def __init__(self):
@@ -125,14 +126,35 @@ class Agent:
 
     async def open_browser(self):
         try:
+            monitors = screeninfo.get_monitors()
+            args = ['--disable-blink-features=AutomationControlled']
+
+            # ✅ Automatically handle window position
+            if len(monitors) == 1:
+                main = monitors[0]
+                args += [
+                    f'--window-position={main.x + 50},{main.y + 50}',
+                    '--window-size=1200,800'
+                ]
+                self.window.after(0, lambda: self.log("📺 Single monitor detected — opening browser on main display"))
+            else:
+                # Prefer 2nd monitor if available
+                second = monitors[1]
+                args += [
+                    f'--window-position={second.x + 100},{second.y + 100}',
+                    '--window-size=1400,900'
+                ]
+                self.window.after(0, lambda: self.log("🖥️ Dual monitor setup — opening browser on second display"))
+
             self.playwright = await async_playwright().start()
             self.context = await self.playwright.chromium.launch_persistent_context(
-                "./browser_data", headless=False, args=['--disable-blink-features=AutomationControlled']
+                "./browser_data", headless=False, args=args
             )
             self.page = self.context.pages[0] if self.context.pages else await self.context.new_page()
             await self.page.goto(LOGIN_URL, timeout=10000)
             self.window.after(0, lambda: self.log("Login page loaded - please log in manually"))
             self.window.after(0, lambda: self.update_status("Please log in", "orange"))
+
         except Exception as e:
             msg = f"Error opening browser: {str(e)}"
             self.window.after(0, lambda: self.log(msg))
@@ -223,7 +245,6 @@ class Agent:
 
                 await frame.check("#LSC_TCRFORMCAMP_LSC_TCRSELECTCAMPU\\$11")
 
-                # ✅ Smart upload: find and use any working input[type=file]
                 try:
                     await frame.click("#LSC_TCRFIATT_WK_ATTACHADD", timeout=10000)
                     self.log("📎 Clicked Add Attachment button... waiting for modal to appear.")
