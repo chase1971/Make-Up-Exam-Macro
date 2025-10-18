@@ -427,10 +427,10 @@ class WebAutomationAgent:
                 self.log(f"❌ Could not connect to existing browser: {e}")
 
                 # Use the new Playwright API with launch_persistent_context
-
+                print("✅ Using shared browser data from:", r"C:\Users\chase\Documents\Shared-Browser-Data")
                 self.context = await self.playwright.chromium.launch_persistent_context(
 
-                    user_data_dir="../../Shared-Browser-Data/Make-Up-Exam-Macro-browser_data",
+                    user_data_dir=r"C:\Users\chase\Documents\Shared-Browser-Data",
 
                     headless=False,
 

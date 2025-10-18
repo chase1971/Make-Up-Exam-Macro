@@ -148,7 +148,7 @@ class Agent:
 
             self.playwright = await async_playwright().start()
             self.context = await self.playwright.chromium.launch_persistent_context(
-                "./browser_data", headless=False, args=args
+                r"C:\Users\chase\Documents\Shared-Browser-Data", headless=False, args=args
             )
             self.page = self.context.pages[0] if self.context.pages else await self.context.new_page()
             await self.page.goto(LOGIN_URL, timeout=10000)

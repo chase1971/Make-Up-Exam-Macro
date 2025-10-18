@@ -1,0 +1,307 @@
+%TEMP%/chrome_debug/BrowserMetrics/BrowserMetrics-68EF13F4-BE08.pma
+%TEMP%/chrome_debug/Crashpad/settings.dat
+%TEMP%/chrome_debug/Default/Account Web Data
+%TEMP%/chrome_debug/Default/Account Web Data-journal
+%TEMP%/chrome_debug/Default/Affiliation Database
+%TEMP%/chrome_debug/Default/Affiliation Database-journal
+%TEMP%/chrome_debug/Default/AutofillStrikeDatabase/LOCK
+%TEMP%/chrome_debug/Default/AutofillStrikeDatabase/LOG
+%TEMP%/chrome_debug/Default/BookmarkMergedSurfaceOrdering
+%TEMP%/chrome_debug/Default/BrowsingTopicsSiteData
+%TEMP%/chrome_debug/Default/BrowsingTopicsSiteData-journal
+%TEMP%/chrome_debug/Default/BrowsingTopicsState
+%TEMP%/chrome_debug/Default/BudgetDatabase/LOCK
+%TEMP%/chrome_debug/Default/BudgetDatabase/LOG
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/data_0
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/data_1
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/data_2
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/data_3
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/f_000001
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/f_000002
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/f_000003
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/f_000004
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/f_000005
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/f_000006
+%TEMP%/chrome_debug/Default/Cache/Cache_Data/index
+%TEMP%/chrome_debug/Default/ClientCertificates/LOCK
+%TEMP%/chrome_debug/Default/ClientCertificates/LOG
+%TEMP%/chrome_debug/Default/ClientCertificates/LOG.old
+%TEMP%/chrome_debug/Default/Code Cache/js/3bc64dd68a6add68_0
+%TEMP%/chrome_debug/Default/Code Cache/js/589b87aa221ec693_0
+%TEMP%/chrome_debug/Default/Code Cache/js/7ef1015df5704f7e_0
+%TEMP%/chrome_debug/Default/Code Cache/js/87f6bcb90d7af7a4_0
+%TEMP%/chrome_debug/Default/Code Cache/js/96540a2f1698b52d_0
+%TEMP%/chrome_debug/Default/Code Cache/js/a6a18d3836478684_0
+%TEMP%/chrome_debug/Default/Code Cache/js/b2166959bfc73b06_0
+%TEMP%/chrome_debug/Default/Code Cache/js/b8755f40caaf8060_0
+%TEMP%/chrome_debug/Default/Code Cache/js/c6ed5fe28606919c_0
+%TEMP%/chrome_debug/Default/Code Cache/js/d5b124f0b0ade1ab_0
+%TEMP%/chrome_debug/Default/Code Cache/js/index
+%TEMP%/chrome_debug/Default/Code Cache/js/index-dir/the-real-index
+%TEMP%/chrome_debug/Default/Code Cache/wasm/index
+%TEMP%/chrome_debug/Default/Code Cache/wasm/index-dir/the-real-index
+%TEMP%/chrome_debug/Default/DIPS
+%TEMP%/chrome_debug/Default/DawnGraphiteCache/data_0
+%TEMP%/chrome_debug/Default/DawnGraphiteCache/data_1
+%TEMP%/chrome_debug/Default/DawnGraphiteCache/data_2
+%TEMP%/chrome_debug/Default/DawnGraphiteCache/data_3
+%TEMP%/chrome_debug/Default/DawnGraphiteCache/index
+%TEMP%/chrome_debug/Default/DawnWebGPUCache/data_0
+%TEMP%/chrome_debug/Default/DawnWebGPUCache/data_1
+%TEMP%/chrome_debug/Default/DawnWebGPUCache/data_2
+%TEMP%/chrome_debug/Default/DawnWebGPUCache/data_3
+%TEMP%/chrome_debug/Default/DawnWebGPUCache/index
+%TEMP%/chrome_debug/Default/Download Service/EntryDB/LOCK
+%TEMP%/chrome_debug/Default/Download Service/EntryDB/LOG
+%TEMP%/chrome_debug/Default/Extension Rules/000003.log
+%TEMP%/chrome_debug/Default/Extension Rules/CURRENT
+%TEMP%/chrome_debug/Default/Extension Rules/LOCK
+%TEMP%/chrome_debug/Default/Extension Rules/LOG
+%TEMP%/chrome_debug/Default/Extension Rules/MANIFEST-000001
+%TEMP%/chrome_debug/Default/Extension Scripts/000003.log
+%TEMP%/chrome_debug/Default/Extension Scripts/CURRENT
+%TEMP%/chrome_debug/Default/Extension Scripts/LOCK
+%TEMP%/chrome_debug/Default/Extension Scripts/LOG
+%TEMP%/chrome_debug/Default/Extension Scripts/MANIFEST-000001
+%TEMP%/chrome_debug/Default/Extension State/000003.log
+%TEMP%/chrome_debug/Default/Extension State/CURRENT
+%TEMP%/chrome_debug/Default/Extension State/LOCK
+%TEMP%/chrome_debug/Default/Extension State/LOG
+%TEMP%/chrome_debug/Default/Extension State/LOG.old
+%TEMP%/chrome_debug/Default/Extension State/MANIFEST-000001
+%TEMP%/chrome_debug/Default/Favicons
+%TEMP%/chrome_debug/Default/Favicons-journal
+%TEMP%/chrome_debug/Default/Feature Engagement Tracker/AvailabilityDB/LOCK
+%TEMP%/chrome_debug/Default/Feature Engagement Tracker/AvailabilityDB/LOG
+%TEMP%/chrome_debug/Default/Feature Engagement Tracker/EventDB/LOCK
+%TEMP%/chrome_debug/Default/Feature Engagement Tracker/EventDB/LOG
+%TEMP%/chrome_debug/Default/GCM Store/000003.log
+%TEMP%/chrome_debug/Default/GCM Store/CURRENT
+%TEMP%/chrome_debug/Default/GCM Store/Encryption/000003.log
+%TEMP%/chrome_debug/Default/GCM Store/Encryption/CURRENT
+%TEMP%/chrome_debug/Default/GCM Store/Encryption/LOCK
+%TEMP%/chrome_debug/Default/GCM Store/Encryption/LOG
+%TEMP%/chrome_debug/Default/GCM Store/Encryption/MANIFEST-000001
+%TEMP%/chrome_debug/Default/GCM Store/LOCK
+%TEMP%/chrome_debug/Default/GCM Store/LOG
+%TEMP%/chrome_debug/Default/GCM Store/MANIFEST-000001
+%TEMP%/chrome_debug/Default/GPUCache/data_0
+%TEMP%/chrome_debug/Default/GPUCache/data_1
+%TEMP%/chrome_debug/Default/GPUCache/data_2
+%TEMP%/chrome_debug/Default/GPUCache/data_3
+%TEMP%/chrome_debug/Default/GPUCache/index
+%TEMP%/chrome_debug/Default/History
+%TEMP%/chrome_debug/Default/History-journal
+%TEMP%/chrome_debug/Default/LOCK
+%TEMP%/chrome_debug/Default/LOG
+%TEMP%/chrome_debug/Default/LOG.old
+%TEMP%/chrome_debug/Default/Local Storage/leveldb/000003.log
+%TEMP%/chrome_debug/Default/Local Storage/leveldb/CURRENT
+%TEMP%/chrome_debug/Default/Local Storage/leveldb/LOCK
+%TEMP%/chrome_debug/Default/Local Storage/leveldb/LOG
+%TEMP%/chrome_debug/Default/Local Storage/leveldb/LOG.old
+%TEMP%/chrome_debug/Default/Local Storage/leveldb/MANIFEST-000001
+%TEMP%/chrome_debug/Default/Login Data
+%TEMP%/chrome_debug/Default/Login Data For Account
+%TEMP%/chrome_debug/Default/Login Data For Account-journal
+%TEMP%/chrome_debug/Default/Login Data-journal
+%TEMP%/chrome_debug/Default/Network Action Predictor
+%TEMP%/chrome_debug/Default/Network Action Predictor-journal
+%TEMP%/chrome_debug/Default/Network/Cookies
+%TEMP%/chrome_debug/Default/Network/Cookies-journal
+%TEMP%/chrome_debug/Default/Network/Network Persistent State
+%TEMP%/chrome_debug/Default/Network/NetworkDataMigrated
+%TEMP%/chrome_debug/Default/Network/Reporting and NEL
+%TEMP%/chrome_debug/Default/Network/Reporting and NEL-journal
+%TEMP%/chrome_debug/Default/Network/SCT Auditing Pending Reports
+%TEMP%/chrome_debug/Default/Network/TransportSecurity
+%TEMP%/chrome_debug/Default/Network/Trust Tokens
+%TEMP%/chrome_debug/Default/Network/Trust Tokens-journal
+%TEMP%/chrome_debug/Default/PersistentOriginTrials/LOCK
+%TEMP%/chrome_debug/Default/PersistentOriginTrials/LOG
+%TEMP%/chrome_debug/Default/PersistentOriginTrials/LOG.old
+%TEMP%/chrome_debug/Default/Preferences
+%TEMP%/chrome_debug/Default/PreferredApps
+%TEMP%/chrome_debug/Default/README
+%TEMP%/chrome_debug/Default/Safe Browsing Network/NetworkDataMigrated
+%TEMP%/chrome_debug/Default/Safe Browsing Network/Safe Browsing Cookies
+%TEMP%/chrome_debug/Default/Safe Browsing Network/Safe Browsing Cookies-journal
+%TEMP%/chrome_debug/Default/Secure Preferences
+%TEMP%/chrome_debug/Default/Segmentation Platform/SegmentInfoDB/LOCK
+%TEMP%/chrome_debug/Default/Segmentation Platform/SegmentInfoDB/LOG
+%TEMP%/chrome_debug/Default/Segmentation Platform/SegmentInfoDB/LOG.old
+%TEMP%/chrome_debug/Default/Segmentation Platform/SignalDB/LOCK
+%TEMP%/chrome_debug/Default/Segmentation Platform/SignalDB/LOG
+%TEMP%/chrome_debug/Default/Segmentation Platform/SignalDB/LOG.old
+%TEMP%/chrome_debug/Default/Segmentation Platform/SignalStorageConfigDB/LOCK
+%TEMP%/chrome_debug/Default/Segmentation Platform/SignalStorageConfigDB/LOG
+%TEMP%/chrome_debug/Default/Segmentation Platform/SignalStorageConfigDB/LOG.old
+%TEMP%/chrome_debug/Default/ServerCertificate
+%TEMP%/chrome_debug/Default/ServerCertificate-journal
+%TEMP%/chrome_debug/Default/Session Storage/000003.log
+%TEMP%/chrome_debug/Default/Session Storage/CURRENT
+%TEMP%/chrome_debug/Default/Session Storage/LOCK
+%TEMP%/chrome_debug/Default/Session Storage/LOG
+%TEMP%/chrome_debug/Default/Session Storage/LOG.old
+%TEMP%/chrome_debug/Default/Session Storage/MANIFEST-000001
+%TEMP%/chrome_debug/Default/Sessions/Session_13404971759048250
+%TEMP%/chrome_debug/Default/Sessions/Session_13404972279730887
+%TEMP%/chrome_debug/Default/Sessions/Tabs_13404971761459763
+%TEMP%/chrome_debug/Default/Sessions/Tabs_13404972279863193
+%TEMP%/chrome_debug/Default/Shared Dictionary/cache/index
+%TEMP%/chrome_debug/Default/Shared Dictionary/cache/index-dir/the-real-index
+%TEMP%/chrome_debug/Default/Shared Dictionary/db
+%TEMP%/chrome_debug/Default/Shared Dictionary/db-journal
+%TEMP%/chrome_debug/Default/SharedStorage
+%TEMP%/chrome_debug/Default/Shortcuts
+%TEMP%/chrome_debug/Default/Shortcuts-journal
+%TEMP%/chrome_debug/Default/Site Characteristics Database/000003.log
+%TEMP%/chrome_debug/Default/Site Characteristics Database/CURRENT
+%TEMP%/chrome_debug/Default/Site Characteristics Database/LOCK
+%TEMP%/chrome_debug/Default/Site Characteristics Database/LOG
+%TEMP%/chrome_debug/Default/Site Characteristics Database/LOG.old
+%TEMP%/chrome_debug/Default/Site Characteristics Database/MANIFEST-000001
+%TEMP%/chrome_debug/Default/Sync Data/LevelDB/000003.log
+%TEMP%/chrome_debug/Default/Sync Data/LevelDB/CURRENT
+%TEMP%/chrome_debug/Default/Sync Data/LevelDB/LOCK
+%TEMP%/chrome_debug/Default/Sync Data/LevelDB/LOG
+%TEMP%/chrome_debug/Default/Sync Data/LevelDB/LOG.old
+%TEMP%/chrome_debug/Default/Sync Data/LevelDB/MANIFEST-000001
+%TEMP%/chrome_debug/Default/Top Sites
+%TEMP%/chrome_debug/Default/Top Sites-journal
+%TEMP%/chrome_debug/Default/Web Data
+%TEMP%/chrome_debug/Default/Web Data-journal
+%TEMP%/chrome_debug/Default/WebStorage/QuotaManager
+%TEMP%/chrome_debug/Default/WebStorage/QuotaManager-journal
+%TEMP%/chrome_debug/Default/chrome_cart_db/LOCK
+%TEMP%/chrome_debug/Default/chrome_cart_db/LOG
+%TEMP%/chrome_debug/Default/chrome_cart_db/LOG.old
+%TEMP%/chrome_debug/Default/commerce_subscription_db/LOCK
+%TEMP%/chrome_debug/Default/commerce_subscription_db/LOG
+%TEMP%/chrome_debug/Default/commerce_subscription_db/LOG.old
+%TEMP%/chrome_debug/Default/discount_infos_db/LOCK
+%TEMP%/chrome_debug/Default/discount_infos_db/LOG
+%TEMP%/chrome_debug/Default/discount_infos_db/LOG.old
+%TEMP%/chrome_debug/Default/discounts_db/LOCK
+%TEMP%/chrome_debug/Default/discounts_db/LOG
+%TEMP%/chrome_debug/Default/discounts_db/LOG.old
+%TEMP%/chrome_debug/Default/heavy_ad_intervention_opt_out.db
+%TEMP%/chrome_debug/Default/heavy_ad_intervention_opt_out.db-journal
+%TEMP%/chrome_debug/Default/optimization_guide_hint_cache_store/LOCK
+%TEMP%/chrome_debug/Default/optimization_guide_hint_cache_store/LOG
+%TEMP%/chrome_debug/Default/parcel_tracking_db/LOCK
+%TEMP%/chrome_debug/Default/parcel_tracking_db/LOG
+%TEMP%/chrome_debug/Default/parcel_tracking_db/LOG.old
+%TEMP%/chrome_debug/Default/shared_proto_db/000003.log
+%TEMP%/chrome_debug/Default/shared_proto_db/CURRENT
+%TEMP%/chrome_debug/Default/shared_proto_db/LOCK
+%TEMP%/chrome_debug/Default/shared_proto_db/LOG
+%TEMP%/chrome_debug/Default/shared_proto_db/LOG.old
+%TEMP%/chrome_debug/Default/shared_proto_db/MANIFEST-000001
+%TEMP%/chrome_debug/Default/shared_proto_db/metadata/000003.log
+%TEMP%/chrome_debug/Default/shared_proto_db/metadata/CURRENT
+%TEMP%/chrome_debug/Default/shared_proto_db/metadata/LOCK
+%TEMP%/chrome_debug/Default/shared_proto_db/metadata/LOG
+%TEMP%/chrome_debug/Default/shared_proto_db/metadata/LOG.old
+%TEMP%/chrome_debug/Default/shared_proto_db/metadata/MANIFEST-000001
+%TEMP%/chrome_debug/Default/trusted_vault.pb
+%TEMP%/chrome_debug/GrShaderCache/data_0
+%TEMP%/chrome_debug/GrShaderCache/data_1
+%TEMP%/chrome_debug/GrShaderCache/data_2
+%TEMP%/chrome_debug/GrShaderCache/data_3
+%TEMP%/chrome_debug/GrShaderCache/f_000001
+%TEMP%/chrome_debug/GrShaderCache/f_000002
+%TEMP%/chrome_debug/GrShaderCache/f_000003
+%TEMP%/chrome_debug/GrShaderCache/index
+%TEMP%/chrome_debug/GraphiteDawnCache/data_0
+%TEMP%/chrome_debug/GraphiteDawnCache/data_1
+%TEMP%/chrome_debug/GraphiteDawnCache/data_2
+%TEMP%/chrome_debug/GraphiteDawnCache/data_3
+%TEMP%/chrome_debug/GraphiteDawnCache/index
+%TEMP%/chrome_debug/Last Browser
+%TEMP%/chrome_debug/Last Version
+%TEMP%/chrome_debug/Local State
+%TEMP%/chrome_debug/ShaderCache/data_0
+%TEMP%/chrome_debug/ShaderCache/data_1
+%TEMP%/chrome_debug/ShaderCache/data_2
+%TEMP%/chrome_debug/ShaderCache/data_3
+%TEMP%/chrome_debug/ShaderCache/index
+%TEMP%/chrome_debug/Variations
+%TEMP%/chrome_debug/extensions_crx_cache/metadata.json
+%TEMP%/chrome_debug/first_party_sets.db
+%TEMP%/chrome_debug/first_party_sets.db-journal
+%TEMP%/chrome_debug/segmentation_platform/ukm_db
+%TEMP%/chrome_debug/segmentation_platform/ukm_db-wal
+.env
+.gitattributes
+.gitignore
+automation_agent New.py
+automation_agent.py
+browser_data/Crashpad/settings.dat
+browser_data/CrashpadMetrics-active.pma
+browser_data/Default/Account Web Data
+browser_data/Default/Affiliation Database
+browser_data/Default/BrowsingTopicsSiteData
+browser_data/Default/Cache/No_Vary_Search/journal.baj
+browser_data/Default/DIPS
+browser_data/Default/Favicons
+browser_data/Default/Favicons-journal
+browser_data/Default/GCM Store/000003.log
+browser_data/Default/GCM Store/LOCK
+browser_data/Default/GCM Store/LOG
+browser_data/Default/GCM Store/MANIFEST-000001
+browser_data/Default/History
+browser_data/Default/History-journal
+browser_data/Default/Local Storage/leveldb/000003.log
+browser_data/Default/Local Storage/leveldb/LOCK
+browser_data/Default/Local Storage/leveldb/LOG
+browser_data/Default/Local Storage/leveldb/MANIFEST-000001
+browser_data/Default/Login Data
+browser_data/Default/Login Data For Account
+browser_data/Default/Login Data-journal
+browser_data/Default/Network Action Predictor
+browser_data/Default/Network Action Predictor-journal
+browser_data/Default/Network/Cookies
+browser_data/Default/Network/Cookies-journal
+browser_data/Default/Network/Network Persistent State
+browser_data/Default/Network/Reporting and NEL
+browser_data/Default/Network/Reporting and NEL-journal
+browser_data/Default/Network/TransportSecurity
+browser_data/Default/Network/Trust Tokens
+browser_data/Default/Preferences
+browser_data/Default/Safe Browsing Network/Safe Browsing Cookies
+browser_data/Default/ServerCertificate
+browser_data/Default/Service Worker/Database/000003.log
+browser_data/Default/Service Worker/Database/LOCK
+browser_data/Default/Service Worker/Database/LOG
+browser_data/Default/Service Worker/Database/MANIFEST-000001
+browser_data/Default/Session Storage/000005.ldb
+browser_data/Default/Session Storage/000007.log
+browser_data/Default/Session Storage/000008.ldb
+browser_data/Default/Session Storage/LOCK
+browser_data/Default/Session Storage/LOG
+browser_data/Default/Session Storage/MANIFEST-000001
+browser_data/Default/Shared Dictionary/db
+browser_data/Default/SharedStorage
+browser_data/Default/Shortcuts
+browser_data/Default/Site Characteristics Database/000004.ldb
+browser_data/Default/Site Characteristics Database/000006.log
+browser_data/Default/Site Characteristics Database/LOCK
+browser_data/Default/Site Characteristics Database/LOG
+browser_data/Default/Site Characteristics Database/MANIFEST-000001
+browser_data/Default/Top Sites
+browser_data/Default/Web Data
+browser_data/Default/Web Data-journal
+browser_data/Default/WebStorage/QuotaManager
+browser_data/Default/WebStorage/QuotaManager-journal
+browser_data/Default/heavy_ad_intervention_opt_out.db
+browser_data/Local State
+browser_data/Safe Browsing/UrlCsdDownloadAllowlist.store.32_13404967072914705
+browser_data/Variations
+browser_data/ZxcvbnData/3/ranked_dicts
+browser_data/first_party_sets.db
+browser_data/first_party_sets.db-journal
+browser_data/segmentation_platform/ukm_db
+browser_data/segmentation_platform/ukm_db-wal
+html extractor.py
+old-gui/agent.py
