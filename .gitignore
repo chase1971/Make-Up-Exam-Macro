@@ -26,6 +26,8 @@ Thumbs.db
 
 # Log files
 *.log
+# Centralized logs folder
+../Logs/
 
 # Temporary files
 *.tmp
