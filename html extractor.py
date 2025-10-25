@@ -1,3 +1,253 @@
+#===============================================================================
+# CODE SYNOPSIS: html extractor.py
+# Generated: 2025-10-25 15:40:01
+# INTENT: Provides asynchronous operations for close operations.
+#===============================================================================
+#
+# OVERVIEW:
+#   Total Lines: 254
+#   Functions: 22
+#   Classes: 1
+#   Global Variables: 3
+#
+# Key Dependencies:
+#   - asyncio
+#   - datetime
+#   - json
+#   - os
+#   - playwright.async_api
+#   - threading
+#   - tkinter
+#
+#===============================================================================
+# ════════════════════
+# BEGIN MACHINE-READABLE DATA (for automated processing)
+# ════════════════════
+# SYNOPSIS_ANNOTATED: YES
+# LAST_ANALYZED: 2025-10-25 15:40:01
+# FILE: html extractor.py
+# IMPORTS_EXTERNAL: asyncio, datetime, json, os, playwright.async_api, threading, tkinter
+# IMPORTS_LOCAL: 
+# GLOBALS: FORM_URL, LOGIN_URL, app
+# FUNCTIONS: __init__, begin_monitoring_after_ready, cleanup, create_widgets, exit_without_saving, goto_form, inject_into_all_frames, log, monitor_clicks, navigate_to_form, on_close, open_browser, run, run_in_loop, run_loop, save_and_close, setup_click_capture_with_iframe_support, start_async_loop, start_extracting, start_login, update_status, watch_new_frames
+# RETURNS: run_in_loop
+# THREAD_TARGETS: run_loop
+# HOTKEYS: 
+# TK_BINDS: 
+# COMMAND_BINDS: 
+# CLASSES: ClickCaptureGUI
+# IO_READS: 
+# IO_WRITES: json.dump(...)
+# EXCEPTIONS: line 97: ['Exception'], line 190: ['Exception'], line 209: ['Exception'], line 234: ['Exception'], line 148: ['Exception'], line 174: ['all exceptions'], line 160: ['all exceptions']
+# CALLGRAPH_ROOTS: __init__,create_widgets,log,update_status,start_async_loop,run_in_loop,start_login,goto_form,start_extracting,begin_monitoring_after_ready,setup_click_capture_with_iframe_support,monitor_clicks,open_browser,navigate_to_form,save_and_close,exit_without_saving,cleanup,run,on_close,run_loop
+# STATE_VARS: FORM_URL,LOGIN_URL
+# STATE_MACHINES_COUNT: 0
+# STATE_TRANSITIONS_COUNT: 0
+# INIT_SEQUENCE: 
+# INTENT: Provides asynchronous operations for close operations.
+# FUNCTION_INTENTS: __init__=Handles the target entities., begin_monitoring_after_ready=Orchestrates multiple operations., cleanup=Handles the target entities., create_widgets=Orchestrates multiple operations., exit_without_saving=Updates internal state., goto_form=Handles form., inject_into_all_frames=Iterates and processes items., log=Updates internal state., monitor_clicks=Iterates and builds collection., navigate_to_form=Orchestrates multiple operations., on_close=Updates internal state., open_browser=Orchestrates multiple operations., run=Handles the target entities., run_in_loop=Returns computed value., run_loop=Updates internal state., save_and_close=Saves data in JSON format., setup_click_capture_with_iframe_support=Iterates and processes items., start_async_loop=Creates and manages background threads., start_extracting=Handles extracting., start_login=Handles login., update_status=Handles status., watch_new_frames=Iterates and processes items.
+# END MACHINE-READABLE DATA
+# ════════════════════
+#===============================================================================
+#
+# 📝 FUNCTION SIGNATURES:
+#
+# ClickCaptureGUI.__init__(self) -> None
+#
+# ClickCaptureGUI.create_widgets(self) -> None
+#
+# ClickCaptureGUI.exit_without_saving(self) -> None
+#
+# ClickCaptureGUI.goto_form(self) -> None
+#
+# ClickCaptureGUI.log(self, msg) -> None
+#
+# ClickCaptureGUI.on_close(self) -> None
+#
+# ClickCaptureGUI.run(self) -> None
+#
+# ClickCaptureGUI.run_in_loop(self, coro) -> None
+#
+# ClickCaptureGUI.save_and_close(self) -> None
+#
+# ClickCaptureGUI.start_async_loop(self) -> None
+#
+# ClickCaptureGUI.start_extracting(self) -> None
+#
+# ClickCaptureGUI.start_login(self) -> None
+#
+# ClickCaptureGUI.update_status(self, text, color = 'blue') -> None
+#
+#===============================================================================
+#
+# ⚡️ THREADING MODEL (CRITICAL)
+#
+# Threads Found:
+#   - run_loop()
+#
+#===============================================================================
+#
+# ⚙️ THREAD INTERACTION MAP:
+#
+#   run_loop():
+#     Reads: None
+#     Writes: None
+#
+#===============================================================================
+#
+# 🧱 CLASSES FOUND:
+#
+#   ClickCaptureGUI (line 15):
+#     - ClickCaptureGUI.__init__()
+#     - ClickCaptureGUI.create_widgets()
+#     - ClickCaptureGUI.log()
+#     - ClickCaptureGUI.update_status()
+#     - ClickCaptureGUI.start_async_loop()
+#     - ClickCaptureGUI.run_in_loop()
+#     - ClickCaptureGUI.start_login()
+#     - ClickCaptureGUI.goto_form()
+#     - ClickCaptureGUI.start_extracting()
+#     - ClickCaptureGUI.save_and_close()
+#     - ClickCaptureGUI.exit_without_saving()
+#     - ClickCaptureGUI.run()
+#     - ClickCaptureGUI.on_close()
+#===============================================================================
+#
+# CRITICAL GLOBAL VARIABLES:
+#
+#===============================================================================
+#
+# 🧠 FUNCTION BEHAVIORAL SUMMARIES:
+#
+#
+#===============================================================================
+#
+# FUNCTION CALL HIERARCHY (depth-limited):
+#
+# - __init__()
+#
+# - create_widgets()
+#
+# - log()
+#
+# - update_status()
+#
+# - start_async_loop()
+#
+# - run_in_loop()
+#
+# - start_login()
+#
+# - goto_form()
+#
+# - start_extracting()
+#
+# - begin_monitoring_after_ready()
+#
+# - setup_click_capture_with_iframe_support()
+#
+# - monitor_clicks()
+#
+# - open_browser()
+#
+# - navigate_to_form()
+#
+# - save_and_close()
+#
+# - exit_without_saving()
+#
+# - cleanup()
+#
+# - run()
+#
+# - on_close()
+#
+# - run_loop()
+#
+#===============================================================================
+#
+# 🔄 STATE MACHINES:
+#
+#   (No state machines detected.)
+#
+#===============================================================================
+#
+# 🔌 EXTERNAL I/O SUMMARY:
+#
+#   Writes: json.dump(...)
+#===============================================================================
+#
+# 📊 DATA FLOW SUMMARY:
+#
+#   __init__() — calls self.create_widgets, self.start_async_loop, self.window.geometry, self.window.title, tk.Tk; no return value
+#   create_widgets() — calls btn_frame.pack, pack, scrolledtext.ScrolledText, self.done_btn.pack, self.exit_btn.pack, self.extract_btn.pack; no return value
+#   log() — calls datetime.now, self.log_text.insert, self.log_text.see, strftime; no return value
+#   update_status() — calls self.status_label.config; no return value
+#   start_async_loop() — calls asyncio.new_event_loop, asyncio.set_event_loop, self.loop.run_forever, self.thread.start, threading.Thread; no return value
+#   run_loop() — calls asyncio.new_event_loop, asyncio.set_event_loop, self.loop.run_forever; no return value
+#   run_in_loop() — calls asyncio.run_coroutine_threadsafe; returns value
+#   start_login() — calls self.login_btn.config, self.open_browser, self.run_in_loop, self.update_status; no return value
+#   goto_form() — calls self.form_btn.config, self.navigate_to_form, self.run_in_loop; no return value
+#   start_extracting() — calls self.begin_monitoring_after_ready, self.extract_btn.config, self.run_in_loop; no return value
+#   begin_monitoring_after_ready() — calls asyncio.create_task, self.done_btn.config, self.log, self.monitor_clicks, self.setup_click_capture_with_iframe_support, self.update_status; no return value
+#   setup_click_capture_with_iframe_support() — calls asyncio.create_task, asyncio.sleep, f.evaluate, inject_into_all_frames, self.log, self.page.evaluate; no return value
+#   inject_into_all_frames() — calls f.evaluate, self.log; no return value
+#   watch_new_frames() — calls asyncio.sleep, f.evaluate, self.log; no return value
+#   monitor_clicks() — calls asyncio.sleep, datetime.now, frame.evaluate, isoformat, self.captures.append, self.log; no return value
+#   open_browser() — reads LOGIN_URL; calls async_playwright, os.makedirs, print, self.context.new_page, self.form_btn.config, self.log; no return value
+#   navigate_to_form() — reads FORM_URL; calls self.extract_btn.config, self.form_btn.config, self.log, self.page.goto, self.page.wait_for_load_state; no return value
+#   save_and_close() — calls datetime.now, json.dump, len, open, self.cleanup, self.log; no return value
+#   exit_without_saving() — calls self.cleanup, self.run_in_loop, self.window.destroy; no return value
+#   cleanup() — calls print, self.context.close, self.playwright.stop; no return value
+#   run() — calls self.window.mainloop, self.window.protocol; no return value
+#   on_close() — calls self.loop.call_soon_threadsafe, self.window.destroy; no return value
+#===============================================================================
+#
+# 🔧 MODULARIZATION RECOMMENDATIONS:
+#
+# ⚠️ THREADING: Multiple threads access shared state.
+#    1. Keep thread functions with their state variables
+#    2. Add proper locking if splitting state
+#    3. Ensure thread-safe access to shared resources
+#
+# ⚠️ GLOBAL STATE: Significant global variables found.
+#    1. Create a State class to hold all globals
+#    2. Pass state object instead of using globals
+#    3. Use getter/setter methods for thread-safe access
+#
+# When modularizing, consider splitting by:
+#   - Separate state management from business logic
+#   - Group related functions into modules
+#   - Separate UI code from core logic
+#===============================================================================
+#===============================================================================
+# 📞 FUNCTION CALL HIERARCHY:
+#   (No intra-module function calls detected.)
+#===============================================================================
+# 🔄 STATE MACHINE TRANSITIONS:
+#   (No *_state transitions detected.)
+#===============================================================================
+# ⌨️ HOTKEY BINDINGS:
+#   (No keyboard hotkeys detected.)
+#===============================================================================
+#
+# 🧩 MODULE INTEGRATION INTENT:
+#   Role: Single-file code analyzer that injects a synopsis header
+#   Used by: (future) system_synopsis_builder.py for folder-wide Markdown
+#   Inputs: Python source file path
+#   Outputs: Annotated source file (prepends this synopsis)
+#===============================================================================
+#
+# 📝 INSTRUCTIONS FOR AI:
+#   1. Preserve ALL global variable dependencies shown above
+#   2. Maintain thread safety for variables accessed by multiple threads
+#   3. Do NOT rename variables unless explicitly asked
+#   4. Ensure all function dependencies are preserved
+#   5. Keep UI-threaded calls (e.g., tk.after) on main thread or marshal via queue
+#   6. Ensure hotkeys and binds still invoke the same callbacks
+#===============================================================================
+# === END SYNOPSIS HEADER ===
+# === END SYNOPSIS HEADER ===
 import asyncio
 import tkinter as tk
 from tkinter import scrolledtext
