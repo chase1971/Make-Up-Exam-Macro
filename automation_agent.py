@@ -279,10 +279,13 @@ class WebAutomationAgent:
         self.exam = None
 
         self.exam_file_path = None
+        
+        self.automation_data = None  # Will store JSON data from Node.js
 
         self.start_async_loop()
 
-        self.load_csv_data()
+        # Don't load CSV anymore - will be replaced by JSON data
+        # self.load_csv_data()
 
 
 
@@ -334,25 +337,63 @@ class WebAutomationAgent:
 
             
 
-            # Replace "Insert Date" with the actual exam date
+            # Convert date from MM/DD/YYYY to MM/DD format (no year, no brackets)
+            date_formatted = exam_date
+            try:
+                from datetime import datetime
+                if exam_date:
+                    # Try to parse MM/DD/YYYY format
+                    date_obj = datetime.strptime(exam_date, '%m/%d/%Y')
+                    # Format as MM/DD (no year)
+                    date_formatted = date_obj.strftime('%m/%d')
+            except:
+                # If parsing fails, try to extract just MM/DD from the string
+                if '/' in exam_date:
+                    parts = exam_date.split('/')
+                    if len(parts) >= 2:
+                        date_formatted = f"{parts[0]}/{parts[1]}"
+            
+            self.log(f"📅 Formatting date: '{exam_date}' -> '{date_formatted}'")
 
+            # Replace date patterns in all paragraphs
+            # Check for: [Date], [DATE], [Insert Date], Insert Date
+            replacements_made = 0
+            date_placeholders = ["[Date]", "[DATE]", "[Insert Date]", "Insert Date"]
+            
             for paragraph in doc.paragraphs:
-
-                if "Insert Date" in paragraph.text:
-
-                    paragraph.text = paragraph.text.replace("Insert Date", exam_date)
-
-                    self.log(f"✅ Replaced 'Insert Date' with '{exam_date}'")
-
+                original_text = paragraph.text
                 
-
-                # Also replace "[Insert Date]" if it exists with brackets
-
-                if "[Insert Date]" in paragraph.text:
-
-                    paragraph.text = paragraph.text.replace("[Insert Date]", exam_date)
-
-                    self.log(f"✅ Replaced '[Insert Date]' with '{exam_date}'")
+                # Replace all date placeholders in paragraph text
+                for placeholder in date_placeholders:
+                    if placeholder in paragraph.text:
+                        paragraph.text = paragraph.text.replace(placeholder, date_formatted)
+                        replacements_made += 1
+                        self.log(f"✅ Replaced '{placeholder}' with '{date_formatted}' in paragraph")
+                
+                # Also check and replace in runs (for formatted text)
+                for run in paragraph.runs:
+                    for placeholder in date_placeholders:
+                        if placeholder in run.text:
+                            run.text = run.text.replace(placeholder, date_formatted)
+                            replacements_made += 1
+                            self.log(f"✅ Replaced '{placeholder}' with '{date_formatted}' in run")
+            
+            # Also check tables for date placeholders
+            for table in doc.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        for paragraph in cell.paragraphs:
+                            for placeholder in date_placeholders:
+                                if placeholder in paragraph.text:
+                                    paragraph.text = paragraph.text.replace(placeholder, date_formatted)
+                                    replacements_made += 1
+                                    self.log(f"✅ Replaced '{placeholder}' with '{date_formatted}' in table cell")
+            
+            if replacements_made == 0:
+                self.log(f"⚠️ WARNING: No date placeholders found to replace! Searched for: {date_placeholders}")
+                self.log(f"⚠️ Date that should be inserted: '{date_formatted}'")
+            else:
+                self.log(f"✅ Made {replacements_made} date replacement(s) in document")
 
             
 
@@ -405,6 +446,169 @@ class WebAutomationAgent:
         self.thread.start()
 
 
+
+    def load_data_from_json(self, automation_data):
+        """Load data from JSON (replacing CSV)"""
+        try:
+            self.log("📋 Loading data from JSON (UI form)...")
+            self.log(f"📋 Automation data keys: {list(automation_data.keys())}")
+            
+            # Get exam name and term
+            exam_name = automation_data.get('examName', '')
+            if exam_name:
+                self.exam = exam_name
+                self.log(f"📋 Exam: {self.exam}")
+            else:
+                self.log("⚠️ No exam name provided")
+            
+            # Get term code - hardcoded value provided by user (e.g., "1258" for Fall 2025)
+            # This is not derived from date - user must manually update it each semester
+            self.term = automation_data.get('termCode', '')
+            if not self.term:
+                self.log("⚠️ No term code provided - using empty string")
+            self.log(f"📘 Term Code: {self.term}")
+            
+            # Get class selection
+            className = automation_data.get('className', '')
+            selected_student_indices = automation_data.get('selectedStudents', [])
+            students_data = automation_data.get('students', [])  # From Import File
+            
+            self.log(f"📋 Class Name: {className}")
+            self.log(f"📋 Selected Student Indices: {selected_student_indices}")
+            self.log(f"📋 Total Students Data: {len(students_data)}")
+            
+            # Get scheduler data
+            start_date_raw = automation_data.get('startDate', '')
+            end_date_raw = automation_data.get('endDate', '')
+            exam_hours = automation_data.get('examHours', 0)
+            exam_minutes = automation_data.get('examMinutes', 0)
+            specify_type = automation_data.get('specifyType', 'none')
+            custom_specify_text = automation_data.get('customSpecifyText', '')
+            
+            # Convert dates from YYYY-MM-DD to MM/DD/YYYY format (what the form expects)
+            start_date = self._convert_date_format(start_date_raw)
+            end_date = self._convert_date_format(end_date_raw)
+            
+            self.log(f"📅 Start Date (raw): {start_date_raw} -> (converted): {start_date}")
+            self.log(f"📅 End Date (raw): {end_date_raw} -> (converted): {end_date}")
+            
+            # Convert class name to format: math.XXXX.XXXX
+            # Example: "FM 4103" -> "math.1324.4103"
+            # Example: "CA 4105" -> "math.1314.4105"
+            class_code = self._convert_class_name_to_code(className)
+            self.log(f"📚 Class code: {class_code}")
+            
+            # Get specify text based on type
+            specify_text = ''
+            if specify_type == 'noteCard':
+                specify_text = 'Students are allowed to use one 3x5 note card during the exam.'
+            elif specify_type == 'custom':
+                specify_text = custom_specify_text
+            
+            # Convert selected students to the expected format
+            self.students = []
+            self.log(f"📋 Processing {len(selected_student_indices)} selected students...")
+            for idx in selected_student_indices:
+                if idx < len(students_data):
+                    student_data = students_data[idx]
+                    student_name = student_data.get('fullName', '') or (student_data.get('First Name', '') + ' ' + student_data.get('Last Name', '')).strip()
+                    student_name = student_name.strip()
+                    
+                    self.log(f"📋 Processing student index {idx}: {student_name}")
+                    
+                    if student_name:
+                        student = {
+                            'Class': class_code,
+                            'Name': student_name,
+                            'Start Date': start_date,
+                            'End Date': end_date,
+                            'Hours': str(exam_hours),
+                            'Minutes': str(exam_minutes),
+                            'Specify': specify_text
+                        }
+                        self.students.append(student)
+                        self.log(f"✅ Added student: {student_name}")
+                    else:
+                        self.log(f"⚠️ Skipping student index {idx}: no name found")
+                else:
+                    self.log(f"⚠️ Student index {idx} out of range (max: {len(students_data)-1})")
+            
+            if self.students and self.term:
+                self.log(f"✅ Loaded {len(self.students)} student(s) from UI")
+                self.log(f"📋 THE FOLLOWING STUDENTS WILL BE PROCESSED:")
+                for i, s in enumerate(self.students, 1):
+                    self.log(f"  {i}. Class: {s['Class']}, Name: {s['Name']}, Start: {s['Start Date']}, End: {s['End Date']}, Hours: {s['Hours']}, Minutes: {s['Minutes']}, Specify: {s['Specify']}")
+            else:
+                self.log("⚠️ Missing term or student data")
+                if not self.students:
+                    self.log("❌ NO STUDENTS SELECTED")
+                if not self.term:
+                    self.log("❌ NO TERM FOUND")
+                    
+        except Exception as e:
+            self.log(f"❌ Error loading data from JSON: {e}")
+            import traceback
+            self.log(traceback.format_exc())
+
+    def _convert_class_name_to_code(self, className):
+        """Convert class name from dropdown to format math.XXXX.XXXX"""
+        if not className:
+            return ''
+        
+        import re
+        
+        # Determine course number based on prefix first
+        if 'FM' in className:
+            course_num = '1324'
+            # Look for 4-digit number after "FM" (e.g., "FM 4103" or "TTH ... FM 4103")
+            match = re.search(r'FM\s+(\d{4})', className, re.IGNORECASE)
+        elif 'CA' in className:
+            course_num = '1314'
+            # Look for 4-digit number after "CA" (e.g., "CA 4203" or "TTH ... CA 4203")
+            match = re.search(r'CA\s+(\d{4})', className, re.IGNORECASE)
+        else:
+            course_num = '1324'  # Default
+            # If no FM/CA prefix, try to find the last 4-digit number (should be class number)
+            matches = re.findall(r'(\d{4})', className)
+            if matches:
+                four_digit = matches[-1]  # Use the last 4-digit number found
+                class_code = f"math.{course_num}.{four_digit}"
+                self.log(f"📚 Converted '{className}' -> '{class_code}' (used last 4-digit number)")
+                return class_code
+            else:
+                self.log(f"❌ Could not find 4-digit class number in '{className}'")
+                return ''
+        
+        if match:
+            four_digit = match.group(1)
+        else:
+            # Fallback: try to find any 4-digit number
+            fallback_match = re.search(r'(\d{4})', className)
+            if fallback_match:
+                four_digit = fallback_match.group(1)
+                self.log(f"⚠️ Could not find 4-digit after FM/CA, using first match: {four_digit}")
+            else:
+                self.log(f"❌ Could not find 4-digit class number in '{className}'")
+                return ''
+        
+        # Format: math.XXXX.XXXX
+        class_code = f"math.{course_num}.{four_digit}"
+        self.log(f"📚 Converted '{className}' -> '{class_code}'")
+        return class_code
+    
+    def _convert_date_format(self, date_str):
+        """Convert date from YYYY-MM-DD to MM/DD/YYYY format"""
+        if not date_str:
+            return ''
+        try:
+            from datetime import datetime
+            # Parse YYYY-MM-DD format
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+            # Format as MM/DD/YYYY
+            return date_obj.strftime('%m/%d/%Y')
+        except Exception as e:
+            self.log(f"⚠️ Error converting date '{date_str}': {e}")
+            return date_str  # Return original if conversion fails
 
     def load_csv_data(self):
 
@@ -528,6 +732,8 @@ class WebAutomationAgent:
 
     async def select_student(self, student_name):
 
+        self.log(f"🔍 Looking for student: '{student_name}'")
+
         await self.page.wait_for_selector("iframe[name^='ptModFrame_']", timeout=10000)
 
         lookup_frame = None
@@ -542,7 +748,7 @@ class WebAutomationAgent:
 
         if not lookup_frame:
 
-            self.log("Could not find student lookup frame")
+            self.log("❌ Could not find student lookup frame")
 
             return
 
@@ -552,39 +758,129 @@ class WebAutomationAgent:
 
         links = await lookup_frame.query_selector_all("a.PSSRCHRESULTSODDROW, a.PSSRCHRESULTSEVENROW")
 
+        self.log(f"📋 Found {len(links)} students in lookup results")
 
+        # Collect all student options for logging
+        all_options = []
+        for link in links:
+            text = (await link.inner_text()).strip()
+            all_options.append(text)
+        
+        self.log(f"📋 Available students in lookup: {', '.join(all_options[:10])}{'...' if len(all_options) > 10 else ''}")
+
+        # Parse target student name (expected format from CSV: "First Last" or "First Middle Last")
+        # But system stores as "Last, First Middle" or "Last First Middle"
+        target_parts = student_name.strip().split()
+        target_first = target_parts[0].lower() if target_parts else ""
+        target_last = target_parts[-1].lower() if len(target_parts) > 1 else ""
+        
+        # Normalize: remove hyphens, handle compound names
+        target_first = target_first.replace('-', '').strip()
+        target_last = target_last.replace('-', '').strip()
+        
+        self.log(f"🔍 Target (from CSV): '{student_name}' -> First='{target_first}', Last='{target_last}'")
 
         best_match = None
-
         best_ratio = 0.0
-
         best_text = ""
-
+        exact_match = None
+        first_last_match = None
+        
+        # First pass: Look for matches by comparing first and last names only
+        # System format is "Last, First Middle" or "Last First Middle"
+        # We only care about matching first and last names, ignoring middle names, hyphens, etc.
         for link in links:
-
-            text = (await link.inner_text()).strip().lower()
-
-            ratio = difflib.SequenceMatcher(None, text, student_name.lower()).ratio()
-
-            if ratio > best_ratio:
-
-                best_ratio = ratio
-
-                best_match = link
-
-                best_text = text
-
-
-
-        if best_match and best_ratio > 0.5:
-
-            await best_match.click()
-
-            self.log(f"Selected best match '{best_text}' for {student_name} (score {best_ratio:.2f})")
-
+            text = (await link.inner_text()).strip()
+            text_lower = text.lower()
+            
+            # Handle comma-separated format: "Last, First Middle"
+            has_comma = ',' in text_lower
+            if has_comma:
+                parts_by_comma = text_lower.split(',')
+                text_last_part = parts_by_comma[0].strip() if parts_by_comma else ""
+                text_first_middle_part = parts_by_comma[1].strip() if len(parts_by_comma) > 1 else ""
+                text_last_clean = text_last_part.replace('-', '').strip()
+                
+                # Parse first name from "First Middle" part - first word is the first name
+                first_middle_parts = [p.strip() for p in text_first_middle_part.split() if p.strip()]
+                text_first_clean = first_middle_parts[0].replace('-', '').strip() if first_middle_parts else ""
+            else:
+                # Handle "Last First Middle" format (no comma)
+                text_normalized = text_lower.replace('-', ' ').strip()
+                text_parts = [p.strip() for p in text_normalized.split() if p.strip()]
+                if len(text_parts) >= 2:
+                    text_last_clean = text_parts[0].replace('-', '').strip()
+                    text_first_clean = text_parts[1].replace('-', '').strip()
+                else:
+                    text_last_clean = ""
+                    text_first_clean = ""
+            
+            # Normalize target names (remove hyphens)
+            target_last_clean = target_last.replace('-', '').strip()
+            
+            # Check for exact first+last match (ignoring middle names, hyphens, case)
+            if text_last_clean and text_first_clean:
+                if text_last_clean == target_last_clean and text_first_clean == target_first:
+                    first_last_match = link
+                    best_text = text
+                    best_ratio = 0.95  # Very high confidence for first+last match
+                    self.log(f"✅ Found LAST+FIRST match: '{text}' (System: Last='{text_last_clean}', First='{text_first_clean}' matches CSV: First='{target_first}', Last='{target_last_clean}')")
+                    break
+            
+            # Calculate similarity ratio by comparing first and last names separately
+            if text_last_clean and text_first_clean:
+                # Compare first names and last names separately
+                first_ratio = difflib.SequenceMatcher(None, text_first_clean, target_first).ratio() if text_first_clean else 0
+                last_ratio = difflib.SequenceMatcher(None, text_last_clean, target_last_clean).ratio() if text_last_clean else 0
+                
+                # Average of first and last name similarity
+                ratio = (first_ratio + last_ratio) / 2
+                
+                # Use 0.85 threshold for name matching (allows for small variations)
+                if ratio > best_ratio and ratio >= 0.85:
+                    best_ratio = ratio
+                    best_match = link
+                    best_text = text
+        
+        # Select the best match (prioritize exact > first+last > high similarity)
+        selected_link = None
+        match_type = ""
+        
+        if exact_match:
+            selected_link = exact_match
+            match_type = "EXACT"
+            best_ratio = 1.0
+        elif first_last_match:
+            selected_link = first_last_match
+            match_type = "FIRST+LAST"
+            best_ratio = 0.95
+        elif best_match and best_ratio >= 0.85:
+            selected_link = best_match
+            match_type = "HIGH_SIMILARITY"
         else:
-
-            self.log(f"No good match found for {student_name}. Best score: {best_ratio:.2f}")
+            # No good match found - list all options for debugging
+            self.log(f"❌ No acceptable match found for '{student_name}' (CSV format: First='{target_first}', Last='{target_last}')")
+            self.log(f"❌ Best similarity was only {best_ratio:.2f} (requires >= 0.85)")
+            self.log(f"❌ All available students (showing first/last name comparisons):")
+            for i, opt in enumerate(all_options, 1):
+                opt_lower = opt.lower().replace(',', '').replace('-', ' ').strip()
+                opt_parts = [p.strip() for p in opt_lower.split() if p.strip()]
+                if len(opt_parts) >= 2:
+                    opt_last = opt_parts[0].replace('-', '').strip()
+                    opt_first = opt_parts[1].replace('-', '').strip() if len(opt_parts) > 1 else ""
+                    first_ratio = difflib.SequenceMatcher(None, opt_first, target_first).ratio() if opt_first else 0
+                    last_ratio = difflib.SequenceMatcher(None, opt_last, target_last).ratio() if opt_last else 0
+                    ratio = (first_ratio + last_ratio) / 2
+                    self.log(f"   {i}. '{opt}' (First: {opt_first} vs {target_first}={first_ratio:.2f}, Last: {opt_last} vs {target_last}={last_ratio:.2f}, Combined: {ratio:.2f})")
+                else:
+                    self.log(f"   {i}. '{opt}' (could not parse)")
+            return
+        
+        if selected_link:
+            await selected_link.click()
+            self.log(f"✅ SELECTED STUDENT ({match_type}): '{best_text}' (was looking for: '{student_name}', confidence: {best_ratio:.2f})")
+        else:
+            self.log(f"❌ Failed to select student '{student_name}' - no acceptable match found")
 
 
 
@@ -594,6 +890,13 @@ class WebAutomationAgent:
 
             # Open email template FIRST before starting automation
 
+            if not self.students:
+                self.log("❌ NO STUDENTS TO PROCESS - Automation will not continue")
+                self.log("❌ Check that students were selected and data was loaded correctly")
+                return
+            
+            self.log(f"✅ Found {len(self.students)} student(s) to process")
+            
             if self.students:
 
                 first_student = self.students[0]
@@ -765,6 +1068,8 @@ class WebAutomationAgent:
                     await frame.wait_for_selector(magnifier_selector)
 
                     await frame.click(magnifier_selector)
+
+                    self.log(f"👤 Selecting student {i+1}/{len(students)}: {student['Name']}")
 
                     await self.select_student(student['Name'])
 
@@ -978,21 +1283,27 @@ class WebAutomationAgent:
 
             try:
 
-                if hasattr(self, 'context'):
+                if hasattr(self, 'context') and self.context:
 
-                    asyncio.run(self.context.close())
+                    try:
+                        asyncio.run(self.context.close())
+                        self.log("✅ Browser context closed")
+                    except Exception as context_error:
+                        self.log(f"⚠️ Error closing context: {context_error}")
 
-                    self.log("✅ Browser context closed")
+                if hasattr(self, 'playwright') and self.playwright:
 
-                if hasattr(self, 'playwright'):
-
-                    asyncio.run(self.playwright.stop())
-
-                    self.log("✅ Playwright stopped")
+                    try:
+                        asyncio.run(self.playwright.stop())
+                        self.log("✅ Playwright stopped")
+                    except Exception as playwright_error:
+                        self.log(f"⚠️ Error stopping playwright: {playwright_error}")
 
             except Exception as cleanup_error:
 
                 self.log(f"⚠️ Cleanup error: {cleanup_error}")
+                import traceback
+                self.log(traceback.format_exc())
 
 
 
@@ -1010,11 +1321,42 @@ if __name__ == "__main__":
 
         agent = WebAutomationAgent()
 
-        exam_file_path = sys.argv[2] if len(sys.argv) > 2 else None
-
-        print(f"🐍 Exam file path: {exam_file_path}", file=sys.stderr)
-
-        
+        # Parse the JSON data passed from Node.js
+        exam_file_path = None
+        exam_name = None
+        if len(sys.argv) > 2:
+            try:
+                import json
+                automation_data = json.loads(sys.argv[2])
+                agent.automation_data = automation_data
+                
+                exam_file_path = automation_data.get('examFilePath')
+                exam_name = automation_data.get('examName')
+                print(f"🐍 Exam file path: {exam_file_path}", file=sys.stderr)
+                print(f"🐍 Exam name: {exam_name}", file=sys.stderr)
+                
+                # Set exam name if provided (will be used in form filling)
+                if exam_name:
+                    agent.exam = exam_name
+                    
+                # Load data from JSON instead of CSV
+                agent.load_data_from_json(automation_data)
+                
+                # Verify data was loaded correctly
+                print(f"🐍 After loading JSON:", file=sys.stderr)
+                print(f"🐍 - Students count: {len(agent.students)}", file=sys.stderr)
+                print(f"🐍 - Term: {agent.term}", file=sys.stderr)
+                print(f"🐍 - Exam: {agent.exam}", file=sys.stderr)
+                if not agent.students:
+                    print(f"❌ ERROR: No students loaded! Cannot continue.", file=sys.stderr)
+                if not agent.term:
+                    print(f"⚠️ WARNING: No term set!", file=sys.stderr)
+                
+            except (json.JSONDecodeError, KeyError) as e:
+                print(f"❌ Error parsing JSON data: {e}", file=sys.stderr)
+                # Fallback: treat as file path if JSON parsing fails
+                exam_file_path = sys.argv[2]
+                print(f"🐍 Exam file path (legacy): {exam_file_path}", file=sys.stderr)
 
         success = agent.run_automation(exam_file_path)
 
