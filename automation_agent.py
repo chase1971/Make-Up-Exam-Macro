@@ -281,6 +281,8 @@ class WebAutomationAgent:
         self.exam_file_path = None
         
         self.automation_data = None  # Will store JSON data from Node.js
+        
+        self.class_name = None  # Store class name (e.g., "CA 4105") for email template naming
 
         self.start_async_loop()
 
@@ -303,39 +305,40 @@ class WebAutomationAgent:
 
     def open_email_template(self, class_code, exam_date):
 
-        """Open the appropriate email template and replace the date"""
+        """Open the appropriate email template and replace the date.
+        
+        Creates a copy of the template with the date replaced and a new filename
+        based on class name and exam number.
+        """
 
         try:
 
             # Determine which email template to use based on class code
-
+            # Use the new template file path
             if "1314" in class_code:
 
-                template_path = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\M1314 Make up Exam Automation.docx"
+                template_path = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\M1314 Make up Exam Automation Template.docx"
 
             elif "1324" in class_code:
 
-                template_path = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\M1324 Make up Exam Automation.docx"
+                template_path = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\M1314 Make up Exam Automation Template.docx"
 
             else:
 
                 self.log("⚠️ Unknown class code, using M1314 template as default")
 
-                template_path = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\M1314 Make up Exam Automation.docx"
+                template_path = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\M1314 Make up Exam Automation Template.docx"
 
-            
+            # Check if template exists
+            if not os.path.exists(template_path):
+                self.log(f"❌ Template file not found: {template_path}")
+                return
 
-            self.log(f"📧 Opening email template: {os.path.basename(template_path)}")
-
+            self.log(f"📧 Using template: {os.path.basename(template_path)}")
             self.log(f"📅 Exam date: {exam_date}")
 
-            
-
-            # Load the document and replace the date
-
+            # Load the document template (don't modify the original)
             doc = Document(template_path)
-
-            
 
             # Convert date from MM/DD/YYYY to MM/DD format (no year, no brackets)
             date_formatted = exam_date
@@ -395,19 +398,36 @@ class WebAutomationAgent:
             else:
                 self.log(f"✅ Made {replacements_made} date replacement(s) in document")
 
+            # Create new filename based on class name and exam number
+            # Format: "M1314 Make Up Exam Automation [className] [examName].docx"
+            # Example: "M1314 Make Up Exam Automation CA 4105 Exam 3.docx"
             
-
-            # Save over the original template (no copy)
-
-            doc.save(template_path)
-
-            self.log(f"✅ Updated template with exam date")
-
+            # Get class name (e.g., "CA 4105" or "FM 4103")
+            class_name_display = self.class_name if self.class_name else "Unknown"
             
+            # Get exam name (e.g., "Exam 3")
+            exam_name_display = self.exam if self.exam else "Unknown"
+            
+            # Build the new filename
+            new_filename = f"M1314 Make Up Exam Automation {class_name_display} {exam_name_display}.docx"
+            
+            # Save to the Emails subdirectory
+            emails_dir = r"C:\Users\chase\My Drive\Rosters etc\Email Templates, Assignment Dates\Emails"
+            
+            # Create the directory if it doesn't exist
+            os.makedirs(emails_dir, exist_ok=True)
+            
+            # Build the full path for the new file
+            new_file_path = os.path.join(emails_dir, new_filename)
+            
+            # Save the document with the new name
+            doc.save(new_file_path)
+            
+            self.log(f"✅ Created new email template: {new_filename}")
+            self.log(f"✅ Saved to: {new_file_path}")
 
-            # Open the template
-
-            subprocess.Popen(['start', '', template_path], shell=True)
+            # Open the new file (not the template)
+            subprocess.Popen(['start', '', new_file_path], shell=True)
 
             self.log("✅ Email template opened")
 
@@ -416,18 +436,16 @@ class WebAutomationAgent:
         except Exception as e:
 
             self.log(f"❌ Error opening email template: {e}")
+            import traceback
+            self.log(traceback.format_exc())
 
-            # Fallback: open original template
-
+            # Fallback: try to open the template file itself
             try:
-
-                subprocess.Popen(['start', '', template_path], shell=True)
-
-                self.log("📝 Opened original template - please manually replace 'Insert Date'")
-
-            except:
-
-                self.log("❌ Failed to open template")
+                if 'template_path' in locals():
+                    subprocess.Popen(['start', '', template_path], shell=True)
+                    self.log("📝 Opened original template - please manually replace date and rename")
+            except Exception as fallback_error:
+                self.log(f"❌ Failed to open template: {fallback_error}")
 
 
 
@@ -470,6 +488,7 @@ class WebAutomationAgent:
             
             # Get class selection
             className = automation_data.get('className', '')
+            self.class_name = className  # Store for email template naming
             selected_student_indices = automation_data.get('selectedStudents', [])
             students_data = automation_data.get('students', [])  # From Import File
             
@@ -511,7 +530,15 @@ class WebAutomationAgent:
             for idx in selected_student_indices:
                 if idx < len(students_data):
                     student_data = students_data[idx]
-                    student_name = student_data.get('fullName', '') or (student_data.get('First Name', '') + ' ' + student_data.get('Last Name', '')).strip()
+                    # Construct student name: prefer fullName, otherwise combine First + Last
+                    # This ensures we have all name components for matching
+                    if student_data.get('fullName'):
+                        student_name = student_data.get('fullName').strip()
+                    else:
+                        # Combine First and Last names to capture all components
+                        first = student_data.get('First Name', '').strip()
+                        last = student_data.get('Last Name', '').strip()
+                        student_name = ' '.join([first, last]).strip()
                     student_name = student_name.strip()
                     
                     self.log(f"📋 Processing student index {idx}: {student_name}")
@@ -734,27 +761,38 @@ class WebAutomationAgent:
 
         self.log(f"🔍 Looking for student: '{student_name}'")
 
-        await self.page.wait_for_selector("iframe[name^='ptModFrame_']", timeout=10000)
-
+        # Wait for the lookup modal iframe to appear (with longer timeout and retries)
         lookup_frame = None
-
-        for f in self.page.frames:
-
-            if f.name and f.name.startswith("ptModFrame_"):
-
-                lookup_frame = f
-
-                break
+        max_retries = 3
+        for retry in range(max_retries):
+            try:
+                await self.page.wait_for_selector("iframe[name^='ptModFrame_']", timeout=30000)
+                self.log(f"✅ Found lookup modal iframe (attempt {retry + 1})")
+                
+                # Find the lookup frame
+                for f in self.page.frames:
+                    if f.name and f.name.startswith("ptModFrame_"):
+                        lookup_frame = f
+                        break
+                
+                if lookup_frame:
+                    break
+            except Exception as e:
+                self.log(f"⚠️ Attempt {retry + 1} to find lookup modal failed: {e}")
+                if retry < max_retries - 1:
+                    await asyncio.sleep(1)
+                    self.log(f"🔄 Retrying to find lookup modal...")
 
         if not lookup_frame:
-
-            self.log("❌ Could not find student lookup frame")
-
+            self.log("❌ Could not find student lookup frame after retries")
             return
 
-
-
-        await lookup_frame.wait_for_selector("a.PSSRCHRESULTSODDROW, a.PSSRCHRESULTSEVENROW", timeout=10000)
+        # Wait for the student list to load in the lookup frame
+        try:
+            await lookup_frame.wait_for_selector("a.PSSRCHRESULTSODDROW, a.PSSRCHRESULTSEVENROW", timeout=30000)
+        except Exception as e:
+            self.log(f"❌ Timeout waiting for student list in lookup frame: {e}")
+            return
 
         links = await lookup_frame.query_selector_all("a.PSSRCHRESULTSODDROW, a.PSSRCHRESULTSEVENROW")
 
@@ -768,119 +806,78 @@ class WebAutomationAgent:
         
         self.log(f"📋 Available students in lookup: {', '.join(all_options[:10])}{'...' if len(all_options) > 10 else ''}")
 
-        # Parse target student name (expected format from CSV: "First Last" or "First Middle Last")
-        # But system stores as "Last, First Middle" or "Last First Middle"
-        target_parts = student_name.strip().split()
-        target_first = target_parts[0].lower() if target_parts else ""
-        target_last = target_parts[-1].lower() if len(target_parts) > 1 else ""
+        # NEW APPROACH: Extract ALL name components from target (case-insensitive, normalized)
+        # Handles hyphenated names, comma-separated names, and space-separated names
+        def extract_name_components(name_str):
+            """Extract all name components from a name string.
+            
+            Handles:
+            - Hyphenated names (e.g., "Mary-Jane" -> ["mary", "jane"])
+            - Comma-separated names (e.g., "Smith, John" -> ["smith", "john"])
+            - Regular space-separated names (e.g., "John Smith" -> ["john", "smith"])
+            - Case-insensitive matching
+            """
+            if not name_str:
+                return set()
+            # Normalize: convert to lowercase, replace commas and hyphens with spaces
+            # This ensures "Mary-Jane" and "Mary Jane" are treated the same
+            normalized = name_str.lower().replace(',', ' ').replace('-', ' ').strip()
+            # Split by spaces and filter out empty strings
+            # This creates individual components: "Mary-Jane Smith" -> {"mary", "jane", "smith"}
+            parts = [p.strip() for p in normalized.split() if p.strip()]
+            return set(parts)  # Return as set for easy comparison
         
-        # Normalize: remove hyphens, handle compound names
-        target_first = target_first.replace('-', '').strip()
-        target_last = target_last.replace('-', '').strip()
+        target_name_components = extract_name_components(student_name)
+        self.log(f"🔍 Target name components: {sorted(target_name_components)}")
         
-        self.log(f"🔍 Target (from CSV): '{student_name}' -> First='{target_first}', Last='{target_last}'")
+        if not target_name_components:
+            self.log(f"❌ Could not extract name components from '{student_name}'")
+            return
 
         best_match = None
-        best_ratio = 0.0
+        best_match_count = 0
         best_text = ""
-        exact_match = None
-        first_last_match = None
         
-        # First pass: Look for matches by comparing first and last names only
-        # System format is "Last, First Middle" or "Last First Middle"
-        # We only care about matching first and last names, ignoring middle names, hyphens, etc.
+        # Check each student option
         for link in links:
             text = (await link.inner_text()).strip()
-            text_lower = text.lower()
+            option_name_components = extract_name_components(text)
             
-            # Handle comma-separated format: "Last, First Middle"
-            has_comma = ',' in text_lower
-            if has_comma:
-                parts_by_comma = text_lower.split(',')
-                text_last_part = parts_by_comma[0].strip() if parts_by_comma else ""
-                text_first_middle_part = parts_by_comma[1].strip() if len(parts_by_comma) > 1 else ""
-                text_last_clean = text_last_part.replace('-', '').strip()
-                
-                # Parse first name from "First Middle" part - first word is the first name
-                first_middle_parts = [p.strip() for p in text_first_middle_part.split() if p.strip()]
-                text_first_clean = first_middle_parts[0].replace('-', '').strip() if first_middle_parts else ""
-            else:
-                # Handle "Last First Middle" format (no comma)
-                text_normalized = text_lower.replace('-', ' ').strip()
-                text_parts = [p.strip() for p in text_normalized.split() if p.strip()]
-                if len(text_parts) >= 2:
-                    text_last_clean = text_parts[0].replace('-', '').strip()
-                    text_first_clean = text_parts[1].replace('-', '').strip()
-                else:
-                    text_last_clean = ""
-                    text_first_clean = ""
+            if not option_name_components:
+                continue
             
-            # Normalize target names (remove hyphens)
-            target_last_clean = target_last.replace('-', '').strip()
+            # Count how many name components match (case-insensitive, exact match)
+            matching_components = target_name_components.intersection(option_name_components)
+            match_count = len(matching_components)
             
-            # Check for exact first+last match (ignoring middle names, hyphens, case)
-            if text_last_clean and text_first_clean:
-                if text_last_clean == target_last_clean and text_first_clean == target_first:
-                    first_last_match = link
-                    best_text = text
-                    best_ratio = 0.95  # Very high confidence for first+last match
-                    self.log(f"✅ Found LAST+FIRST match: '{text}' (System: Last='{text_last_clean}', First='{text_first_clean}' matches CSV: First='{target_first}', Last='{target_last_clean}')")
-                    break
-            
-            # Calculate similarity ratio by comparing first and last names separately
-            if text_last_clean and text_first_clean:
-                # Compare first names and last names separately
-                first_ratio = difflib.SequenceMatcher(None, text_first_clean, target_first).ratio() if text_first_clean else 0
-                last_ratio = difflib.SequenceMatcher(None, text_last_clean, target_last_clean).ratio() if text_last_clean else 0
-                
-                # Average of first and last name similarity
-                ratio = (first_ratio + last_ratio) / 2
-                
-                # Use 0.85 threshold for name matching (allows for small variations)
-                if ratio > best_ratio and ratio >= 0.85:
-                    best_ratio = ratio
+            # If we find 2 or more matching name components, this is a good match
+            if match_count >= 2:
+                if match_count > best_match_count:
+                    best_match_count = match_count
                     best_match = link
                     best_text = text
+                    self.log(f"✅ Found match with {match_count} components: '{text}' (matching: {sorted(matching_components)})")
+                    # Don't break - continue to find the best match (most matching components)
         
-        # Select the best match (prioritize exact > first+last > high similarity)
-        selected_link = None
-        match_type = ""
-        
-        if exact_match:
-            selected_link = exact_match
-            match_type = "EXACT"
-            best_ratio = 1.0
-        elif first_last_match:
-            selected_link = first_last_match
-            match_type = "FIRST+LAST"
-            best_ratio = 0.95
-        elif best_match and best_ratio >= 0.85:
-            selected_link = best_match
-            match_type = "HIGH_SIMILARITY"
+        # Select the best match (if we found one with 2+ matching components)
+        if best_match and best_match_count >= 2:
+            await best_match.click()
+            matching_components = target_name_components.intersection(extract_name_components(best_text))
+            self.log(f"✅ SELECTED STUDENT: '{best_text}' (matched {best_match_count} name components: {sorted(matching_components)})")
         else:
             # No good match found - list all options for debugging
-            self.log(f"❌ No acceptable match found for '{student_name}' (CSV format: First='{target_first}', Last='{target_last}')")
-            self.log(f"❌ Best similarity was only {best_ratio:.2f} (requires >= 0.85)")
-            self.log(f"❌ All available students (showing first/last name comparisons):")
+            self.log(f"❌ No acceptable match found for '{student_name}' (requires 2+ matching name components)")
+            self.log(f"❌ Target name components: {sorted(target_name_components)}")
+            self.log(f"❌ All available students (showing component matches):")
             for i, opt in enumerate(all_options, 1):
-                opt_lower = opt.lower().replace(',', '').replace('-', ' ').strip()
-                opt_parts = [p.strip() for p in opt_lower.split() if p.strip()]
-                if len(opt_parts) >= 2:
-                    opt_last = opt_parts[0].replace('-', '').strip()
-                    opt_first = opt_parts[1].replace('-', '').strip() if len(opt_parts) > 1 else ""
-                    first_ratio = difflib.SequenceMatcher(None, opt_first, target_first).ratio() if opt_first else 0
-                    last_ratio = difflib.SequenceMatcher(None, opt_last, target_last).ratio() if opt_last else 0
-                    ratio = (first_ratio + last_ratio) / 2
-                    self.log(f"   {i}. '{opt}' (First: {opt_first} vs {target_first}={first_ratio:.2f}, Last: {opt_last} vs {target_last}={last_ratio:.2f}, Combined: {ratio:.2f})")
+                opt_components = extract_name_components(opt)
+                matching = target_name_components.intersection(opt_components)
+                match_count = len(matching)
+                if match_count > 0:
+                    self.log(f"   {i}. '{opt}' (matched {match_count} component(s): {sorted(matching)})")
                 else:
-                    self.log(f"   {i}. '{opt}' (could not parse)")
+                    self.log(f"   {i}. '{opt}' (no matches)")
             return
-        
-        if selected_link:
-            await selected_link.click()
-            self.log(f"✅ SELECTED STUDENT ({match_type}): '{best_text}' (was looking for: '{student_name}', confidence: {best_ratio:.2f})")
-        else:
-            self.log(f"❌ Failed to select student '{student_name}' - no acceptable match found")
 
 
 
@@ -985,6 +982,12 @@ class WebAutomationAgent:
 
             for class_code, students in class_groups.items():
 
+                # Limit to 5 students max due to form behavior (removes row 1 and changes IDs after 5)
+                original_count = len(students)
+                students = students[:5]
+                if original_count > 5:
+                    self.log(f"⚠️ WARNING: Limiting to 5 students (form has issues with 6+ students). Original count: {original_count}")
+                
                 self.log(f"Processing class {class_code} with {len(students)} students")
 
 
@@ -1031,7 +1034,7 @@ class WebAutomationAgent:
 
 
 
-                await frame.wait_for_selector("#LSC_TCRFRMA_VW_LSC_TERM")
+                await frame.wait_for_selector("#LSC_TCRFRMA_VW_LSC_TERM", timeout=30000)
 
                 await frame.fill("#LSC_TCRFRMA_VW_LSC_TERM", self.term)
 
@@ -1041,7 +1044,7 @@ class WebAutomationAgent:
 
 
 
-                await frame.wait_for_selector("#LSC_TCRFORMS_LSC_OFFICELOCATION")
+                await frame.wait_for_selector("#LSC_TCRFORMS_LSC_OFFICELOCATION", timeout=30000)
 
                 await frame.fill("#LSC_TCRFORMS_LSC_OFFICELOCATION", "F255")
 
@@ -1062,38 +1065,78 @@ class WebAutomationAgent:
 
 
                 for i, student in enumerate(students):
+                    try:
+                        self.log(f"🔄 Starting student {i+1}/{len(students)}: {student['Name']}")
+                        
+                        magnifier_selector = f"#LSC_TCRFORMSTU_LSC_SEMPLID\\$prompt\\$img\\${i}"
 
-                    magnifier_selector = f"#LSC_TCRFORMSTU_LSC_SEMPLID\\$prompt\\$img\\${i}"
-
-                    await frame.wait_for_selector(magnifier_selector)
-
-                    await frame.click(magnifier_selector)
-
-                    self.log(f"👤 Selecting student {i+1}/{len(students)}: {student['Name']}")
-
-                    await self.select_student(student['Name'])
-
-                    if i < len(students) - 1:
-
-                        # Click the plus button with correct ID format: LSC_TCRFORMSTU$new$i$$0
-
-                        await asyncio.sleep(0.5)
-
-                        plus_button_selector = f"#LSC_TCRFORMSTU\\$new\\${i}\\$\\$0"
-
+                        # Wait for the magnifier selector with a longer timeout for subsequent students
                         try:
-
-                            await frame.click(plus_button_selector)
-
-                            self.log(f"✅ Clicked plus button for row {i}")
-
+                            await frame.wait_for_selector(magnifier_selector, timeout=30000)
+                            self.log(f"✅ Found magnifier selector for row {i}")
                         except Exception as e:
+                            self.log(f"⚠️ Timeout waiting for magnifier selector for row {i}: {e}")
+                            # Try waiting a bit more and retry
+                            await asyncio.sleep(2)
+                            try:
+                                await frame.wait_for_selector(magnifier_selector, timeout=30000)
+                                self.log(f"✅ Found magnifier selector for row {i} on retry")
+                            except Exception as retry_error:
+                                self.log(f"❌ Failed to find magnifier selector for row {i} after retry: {retry_error}")
+                                raise  # Re-raise to be caught by outer try/except
 
-                            self.log(f"⚠️ Error clicking plus button: {e}")
+                        await frame.click(magnifier_selector)
+                        self.log(f"✅ Clicked magnifier for row {i}")
 
-                        await asyncio.sleep(0.5)  # Wait for new row to appear
+                        self.log(f"👤 Selecting student {i+1}/{len(students)}: {student['Name']}")
 
+                        await self.select_student(student['Name'])
+                        self.log(f"✅ Completed student selection for {student['Name']}")
 
+                        if i < len(students) - 1:
+                            self.log(f"➕ Preparing to add row {i+1} (currently on row {i})")
+
+                            # Click the plus button with correct ID format: LSC_TCRFORMSTU$new$i$$0
+                            await asyncio.sleep(0.5)
+
+                            plus_button_selector = f"#LSC_TCRFORMSTU\\$new\\${i}\\$\\$0"
+
+                            try:
+                                await frame.click(plus_button_selector)
+                                self.log(f"✅ Clicked plus button for row {i}")
+                            except Exception as e:
+                                self.log(f"⚠️ Error clicking plus button for row {i}: {e}")
+                                raise  # Re-raise to be caught by outer try/except
+
+                            # Wait for the next row's magnifier selector to appear instead of just sleeping
+                            # This ensures the new row is fully loaded before continuing
+                            next_magnifier_selector = f"#LSC_TCRFORMSTU_LSC_SEMPLID\\$prompt\\$img\\${i+1}"
+                            try:
+                                await frame.wait_for_selector(next_magnifier_selector, timeout=30000)
+                                self.log(f"✅ Next row (row {i+1}) is ready")
+                            except Exception as e:
+                                self.log(f"⚠️ Timeout waiting for next row magnifier selector (row {i+1}): {e}")
+                                # Try one more time with a longer wait
+                                await asyncio.sleep(2)
+                                try:
+                                    await frame.wait_for_selector(next_magnifier_selector, timeout=30000)
+                                    self.log(f"✅ Next row (row {i+1}) is ready after retry")
+                                except Exception as retry_error:
+                                    self.log(f"❌ Failed to find next row magnifier selector after retry: {retry_error}")
+                                    # Don't raise - continue anyway, the next iteration will handle it
+                        
+                        self.log(f"✅ Completed processing student {i+1}/{len(students)}: {student['Name']}")
+                        
+                    except Exception as e:
+                        self.log(f"❌ ERROR processing student {i+1}/{len(students)} ({student['Name']}): {e}")
+                        import traceback
+                        self.log(f"❌ Traceback: {traceback.format_exc()}")
+                        # Continue to next student instead of stopping
+                        self.log(f"⚠️ Continuing to next student despite error...")
+                        await asyncio.sleep(1)  # Brief pause before continuing
+
+                # After processing students (max 5), immediately continue to fill out the form
+                self.log(f"✅ Completed processing {len(students)} student(s). Proceeding to fill out form fields...")
 
                 first_student = students[0]
 
